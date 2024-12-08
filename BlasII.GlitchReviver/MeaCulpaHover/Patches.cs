@@ -3,53 +3,24 @@ using Il2CppTGK.Game.Components.Attack.Requesters;
 
 namespace BlasII.GlitchReviver.MeaCulpaHover;
 
-//[HarmonyLib.HarmonyPatch(typeof(MeaCulpaPhantomTeleportAbility), nameof(MeaCulpaPhantomTeleportAbility.CanUseProjectileSpawnerAttack))]
-//class t
-//{
-//    public static void Postfix(ref bool __result)
-//    {
-//        __result = true;
-//    }
-//}
-
-//[HarmonyLib.HarmonyPatch(typeof(MeaCulpaProjectileDirectionalAirAttackRequester), nameof(MeaCulpaProjectileDirectionalAirAttackRequester.OnAttack))]
-//class t2
-//{
-//    public static void Prefix(MeaCulpaProjectileDirectionalAirAttackRequester __instance)
-//    {
-//        ModLog.Info("On attack");
-//        __instance.ResetNumOfProjectiles();
-//        __instance.numOfProjectiles = 0;
-//    }
-
-//    public static void Postfix(MeaCulpaProjectileDirectionalAirAttackRequester __instance)
-//    {
-//        ModLog.Info("On attack");
-//        __instance.ResetNumOfProjectiles();
-//        __instance.numOfProjectiles = 0;
-//    }
-//}
-
+/// <summary>
+/// Always set numProjectiles to 1.  Not exactly sure why this works but it does
+/// </summary>
 [HarmonyPatch(typeof(MeaCulpaProjectileAirAttackRequester), nameof(MeaCulpaProjectileAirAttackRequester.Evaluate))]
-class t3
+class MeaCulpaProjectileAirAttackRequester_Evaluate_Patch
 {
-    public static void Postfix(MeaCulpaProjectileAirAttackRequester __instance, ref bool __result)
+    public static void Postfix(MeaCulpaProjectileAirAttackRequester __instance)
     {
-        //ModLog.Info("Evaluating horizontal");
-        //__result = Input.GetKey(KeyCode.K) && !Input.GetKey(KeyCode.W);
-        __instance.numOfProjectiles = 1;
-        //__result = __instance.attackRequested;
+        if (Main.GlitchReviver.CurrentConfig.AllowMeaCulpaHover)
+            __instance.numOfProjectiles = 1;
     }
 }
-
 [HarmonyPatch(typeof(MeaCulpaProjectileDirectionalAirAttackRequester), nameof(MeaCulpaProjectileDirectionalAirAttackRequester.Evaluate))]
-class t4
+class MeaCulpaProjectileDirectionalAirAttackRequester_Evaluate_Patch
 {
-    public static void Postfix(MeaCulpaProjectileDirectionalAirAttackRequester __instance, ref bool __result)
+    public static void Postfix(MeaCulpaProjectileDirectionalAirAttackRequester __instance)
     {
-        //ModLog.Info("Evaluating vertical");
-        //__result = Input.GetKey(KeyCode.K) && Input.GetKey(KeyCode.W);
-        __instance.numOfProjectiles = 1;
-        //__result = __instance.attackRequested;
+        if (Main.GlitchReviver.CurrentConfig.AllowMeaCulpaHover)
+            __instance.numOfProjectiles = 1;
     }
 }
