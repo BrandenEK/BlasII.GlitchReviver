@@ -1,25 +1,33 @@
-﻿using BlasII.ModdingAPI.Assets;
+﻿using BlasII.ModdingAPI;
+using BlasII.ModdingAPI.Assets;
 using HarmonyLib;
 using Il2CppLightbug.Kinematic2D.Implementation;
 using Il2CppTGK.Game;
 using Il2CppTGK.Game.Components.Abilities;
+using Il2CppTGK.Game.Components.Abilities.Inputs;
 using Il2CppTGK.Game.Components.Attack.Data;
+using Il2CppTGK.Game.Components.Prayers;
+using UnityEngine;
 
 namespace BlasII.GlitchReviver.MirabrasDive;
 
-[HarmonyPatch(typeof(ChangeWeaponAbility), nameof(ChangeWeaponAbility.OnUpdate))]
+[HarmonyPatch(typeof(FullPrayerAbility), nameof(FullPrayerAbility.OnUpdate))]
 class ChangeWeaponAbility_OnUpdate_Patch
 {
-    public static void Postfix()
+    public static void Postfix(FullPrayerAbility __instance)
     {
         if (!Main.GlitchReviver.CurrentConfig.AllowMirabrasDive)
             return;
 
-        if (!Main.GlitchReviver.InputHandler.GetButtonDown(ModdingAPI.Input.ButtonType.NextWeapon))
+        //if (!Main.GlitchReviver.InputHandler.GetButtonDown(ModdingAPI.Input.ButtonType.NextWeapon))
+        //    return;
+        if (!Input.GetKeyDown(KeyCode.R))
             return;
 
         if (CoreCache.EquipmentManager.CountUnlockedWeapons() < 2)
             return;
+
+        ModLog.Info("Activating module 'MirabrasDive'");
 
         var changeWeapon = AssetStorage.Abilities[ABILITY_IDS.ChangeWeapon];
         var fullPrayer = AssetStorage.Abilities[ABILITY_IDS.FullPrayer];
@@ -34,7 +42,35 @@ class ChangeWeaponAbility_OnUpdate_Patch
             nextWeaponSlot = 0;
         WeaponID nextWeapon = CoreCache.EquipmentManager.GetAssignedWeaponToSlot(nextWeaponSlot);
 
-        CoreCache.PlayerSpawn.PlayerControllerRef.GetAbility<ChangeWeaponAbility>().ChangeWeapon(nextWeapon);
+        //__instance.ChangeWeapon(nextWeapon);
+    }
+}
+
+[HarmonyPatch(typeof(ChangeWeaponAbility), nameof(ChangeWeaponAbility.OnIgnore))]
+class ChangeWeaponAbility_OnUpdate_Patch2
+{
+    public static void Postfix(ChangeWeaponAbility __instance)
+    {
+
+        ModLog.Warn("ignore");
+    }
+}
+
+[HarmonyPatch(typeof(ChangeWeaponInputsReaderWithMeaCulpa), nameof(ChangeWeaponInputsReaderWithMeaCulpa.ConsumeInput))]
+class t
+{
+    public static void Postfix()
+    {
+        ModLog.Warn("Consume");
+    }
+}
+
+[HarmonyPatch(typeof(ChangeWeaponInputsReaderWithMeaCulpa), nameof(ChangeWeaponInputsReaderWithMeaCulpa.ProcessCharacterActionsInfo))]
+class t2
+{
+    public static void Postfix()
+    {
+        //ModLog.Warn("process");
     }
 }
 
