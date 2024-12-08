@@ -6,8 +6,12 @@
 
 ## Features
 - Enable/disable individual glitches on current patch
-  - ```F6 + Keypad1```: Toggle 'MirabrasDive' availablity
-  - ```F6 + Keypad2```: Toggle 'MeaCulpaHover' availablity
+
+## Available glitches
+| Keybinding | Effect |
+| ---------- | ------ |
+| ```F6 + Keypad1``` | Toggle 'MirabrasDive' availablity |
+| ```F6 + Keypad2``` | Toggle 'MeaCulpaHover' availablity |
 
 ## Installation
 This mod is available for download through the [Blasphemous Mod Installer](https://github.com/BrandenEK/Blasphemous.Modding.Installer)
