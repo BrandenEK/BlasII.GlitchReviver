@@ -11,8 +11,10 @@ class MeaCulpaProjectileAirAttackRequester_Evaluate_Patch
 {
     public static void Postfix(MeaCulpaProjectileAirAttackRequester __instance)
     {
-        if (Main.GlitchReviver.CurrentConfig.AllowMeaCulpaHover)
-            __instance.numOfProjectiles = 1;
+        if (!Main.GlitchReviver.CurrentConfig.AllowMeaCulpaHover)
+            return;
+
+        __instance.numOfProjectiles = 1;
     }
 }
 [HarmonyPatch(typeof(MeaCulpaProjectileDirectionalAirAttackRequester), nameof(MeaCulpaProjectileDirectionalAirAttackRequester.Evaluate))]
@@ -20,7 +22,9 @@ class MeaCulpaProjectileDirectionalAirAttackRequester_Evaluate_Patch
 {
     public static void Postfix(MeaCulpaProjectileDirectionalAirAttackRequester __instance)
     {
-        if (Main.GlitchReviver.CurrentConfig.AllowMeaCulpaHover)
-            __instance.numOfProjectiles = 1;
+        if (!Main.GlitchReviver.CurrentConfig.AllowMeaCulpaHover)
+            return;
+
+        __instance.numOfProjectiles = 1;
     }
 }
