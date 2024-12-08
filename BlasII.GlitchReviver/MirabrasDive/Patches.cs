@@ -8,7 +8,7 @@ using Il2CppTGK.Game.Components.Prayers;
 namespace BlasII.GlitchReviver.MirabrasDive;
 
 [HarmonyPatch(typeof(FullPrayerAbility), nameof(FullPrayerAbility.OnUpdate))]
-class ChangeWeaponAbility_OnUpdate_Patch
+class FullPrayerAbility_OnUpdate_Patch
 {
     public static void Postfix(FullPrayerAbility __instance)
     {
