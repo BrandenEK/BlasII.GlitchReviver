@@ -52,14 +52,14 @@ public class GlitchReviver : BlasIIMod
         if (InputHandler.GetKeyDown("MirabrasDive"))
         {
             CurrentConfig.AllowMirabrasDive = !CurrentConfig.AllowMirabrasDive;
-            ModLog.Info($"Toggling module 'AllowMirabrasDive' to {CurrentConfig.AllowMirabrasDive}");
+            ModLog.Info($"Toggling module 'MirabrasDive' to {CurrentConfig.AllowMirabrasDive}");
             return true;
         }
 
         if (InputHandler.GetKeyDown("MeaCulpaHover"))
         {
             CurrentConfig.AllowMeaCulpaHover = !CurrentConfig.AllowMeaCulpaHover;
-            ModLog.Info($"Toggling module 'AllowMeaCulpaHover' to {CurrentConfig.AllowMeaCulpaHover}");
+            ModLog.Info($"Toggling module 'MeaCulpaHover' to {CurrentConfig.AllowMeaCulpaHover}");
             return true;
         }
 
