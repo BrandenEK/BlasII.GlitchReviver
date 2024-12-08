@@ -65,4 +65,14 @@ public class GlitchReviver : BlasIIMod
 
         return false;
     }
+
+    /// <summary>
+    /// Logs an activation message (Debug only)
+    /// </summary>
+    public void ActivateModule(string name)
+    {
+#if DEBUG
+        ModLog.Info($"Activating module '{name}'");
+#endif
+    }
 }

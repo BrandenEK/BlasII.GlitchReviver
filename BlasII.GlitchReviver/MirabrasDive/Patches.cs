@@ -1,5 +1,4 @@
-﻿using BlasII.ModdingAPI;
-using BlasII.ModdingAPI.Assets;
+﻿using BlasII.ModdingAPI.Assets;
 using HarmonyLib;
 using Il2CppLightbug.Kinematic2D.Implementation;
 using Il2CppTGK.Game;
@@ -25,9 +24,7 @@ class ChangeWeaponAbility_OnUpdate_Patch
         if (CoreCache.EquipmentManager.CountUnlockedWeapons() < 2)
             return;
 
-#if DEBUG
-        ModLog.Info("Activating module 'MirabrasDive'");
-#endif
+        Main.GlitchReviver.ActivateModule("MirabrasDive");
 
         var changeWeapon = AssetStorage.Abilities[ABILITY_IDS.ChangeWeapon];
         var fullPrayer = AssetStorage.Abilities[ABILITY_IDS.FullPrayer];
