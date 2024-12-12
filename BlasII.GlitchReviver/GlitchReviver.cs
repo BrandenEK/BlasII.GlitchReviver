@@ -1,5 +1,9 @@
 ﻿using BlasII.ModdingAPI;
+using BlasII.ModdingAPI.Helpers;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace BlasII.GlitchReviver;
@@ -11,68 +15,129 @@ public class GlitchReviver : BlasIIMod
 {
     internal GlitchReviver() : base(ModInfo.MOD_ID, ModInfo.MOD_NAME, ModInfo.MOD_AUTHOR, ModInfo.MOD_VERSION) { }
 
-    /// <summary>
-    /// The current settings for which glitches are allowed
-    /// </summary>
-    public GlitchConfig CurrentConfig { get; private set; }
+    private readonly List<BaseModule> _modules = [];
+    private bool _toggleStatus = false;
 
-    /// <summary>
-    /// Loads the initial config and registers keybindings
-    /// </summary>
+    /// <inheritdoc cref="GlitchSettings"/>
+    public GlitchSettings CurrentSettings { get; private set; }
+
+    /// <inheritdoc/>
     protected override void OnInitialize()
     {
-        CurrentConfig = ConfigHandler.Load<GlitchConfig>();
+        CurrentSettings = ConfigHandler.Load<GlitchSettings>();
+        LoadModules();
 
-        InputHandler.RegisterDefaultKeybindings(new Dictionary<string, KeyCode>()
-        {
-            { "Activator", KeyCode.F6 },
-            { "MirabrasDive", KeyCode.Keypad1 },
-            { "MeaCulpaHover", KeyCode.Keypad2 },
-        });
+        // Initialize handlers
+        InputHandler.RegisterDefaultKeybindings(SetupInput());
+
+        // Call OnStart for all modules
+        foreach (var module in _modules)
+            module.OnStart();
     }
 
-    /// <summary>
-    /// Checks for input and updates modules
-    /// </summary>
+    /// <inheritdoc/>
     protected override void OnUpdate()
     {
-        // If a glitch status was updated, save the config
+        // If module status was updated, save the config
         if (ProcessInput())
-            ConfigHandler.Save(CurrentConfig);
+            ConfigHandler.Save(CurrentSettings);
+
+        if (!SceneHelper.GameSceneLoaded)
+            return;
+
+        // Call OnUpdate for all modules
+        foreach (var module in _modules)
+            module.OnUpdate();
     }
 
     /// <summary>
-    /// Checks for glitch input and returns whether the config was updated
+    /// Creates the keybindings dictionary from all the modules
+    /// </summary>
+    private Dictionary<string, KeyCode> SetupInput()
+    {
+        var input = new Dictionary<string, KeyCode>
+        {
+            { "Activator", KeyCode.F6 },
+            { "Toggle_All", KeyCode.KeypadEnter },
+        };
+
+        foreach (var module in _modules)
+            input.Add($"Toggle_{module.Name}", Enum.Parse<KeyCode>($"Keypad{module.Order}"));
+
+        return input;
+    }
+
+    /// <summary>
+    /// Checks for qol input and returns whether the config was updated
     /// </summary>
     private bool ProcessInput()
     {
+        // Check if activator key is held
         if (!InputHandler.GetKey("Activator"))
             return false;
 
-        if (InputHandler.GetKeyDown("MirabrasDive"))
+        // Check if toggle all key was pressed
+        if (InputHandler.GetKeyDown("Toggle_All"))
         {
-            CurrentConfig.AllowMirabrasDive = !CurrentConfig.AllowMirabrasDive;
-            ModLog.Info($"Toggling module 'MirabrasDive' to {CurrentConfig.AllowMirabrasDive}");
+            _toggleStatus = !_toggleStatus;
+
+            foreach (var module in _modules)
+                SetModuleStatus(module.Name, _toggleStatus);
+
+            ModLog.Info($"Toggling all modules to {_toggleStatus}");
             return true;
         }
 
-        if (InputHandler.GetKeyDown("MeaCulpaHover"))
+        bool modified = false;
+        foreach (var module in _modules)
         {
-            CurrentConfig.AllowMeaCulpaHover = !CurrentConfig.AllowMeaCulpaHover;
-            ModLog.Info($"Toggling module 'MeaCulpaHover' to {CurrentConfig.AllowMeaCulpaHover}");
-            return true;
+            // Check if this module's key was pressed
+            if (!InputHandler.GetKeyDown($"Toggle_{module.Name}"))
+                continue;
+
+            // Toggle the config setting
+            ToggleModuleStatus(module.Name);
+            modified = true;
         }
 
-        return false;
+        return modified;
+    }
+
+
+    /// <summary>
+    /// Toggles the module's setting in the config
+    /// </summary>
+    private void ToggleModuleStatus(string name)
+    {
+        PropertyInfo property = typeof(GlitchSettings).GetProperty(name);
+        bool status = (bool)property.GetValue(CurrentSettings, null);
+        property.SetValue(CurrentSettings, !status);
+
+        ModLog.Info($"Toggling module '{name}' to {!status}");
     }
 
     /// <summary>
-    /// Logs an activation message (Debug only)
+    /// Sets the module's setting in the config
     /// </summary>
-    public void ActivateModule(string name)
+    private void SetModuleStatus(string name, bool status)
     {
-#if DEBUG
-        ModLog.Info($"Activating module '{name}'");
-#endif
+        PropertyInfo property = typeof(GlitchSettings).GetProperty(name);
+        property.SetValue(CurrentSettings, status);
+
+        //ModLog.Info($"Setting module '{name}' to {status}");
+    }
+
+    /// <summary>
+    /// Loads all modules using reflection
+    /// </summary>
+    private void LoadModules()
+    {
+        var modules = Assembly.GetExecutingAssembly().GetTypes()
+            .Where(x => x.IsSubclassOf(typeof(BaseModule)))
+            .Select(x => (BaseModule)Activator.CreateInstance(x))
+            .OrderBy(x => x.Order);
+
+        _modules.AddRange(modules);
+        ModLog.Info($"Loaded {_modules.Count} modules");
     }
 }
