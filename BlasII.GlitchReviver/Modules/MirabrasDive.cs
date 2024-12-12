@@ -5,14 +5,23 @@ using Il2CppTGK.Game;
 using Il2CppTGK.Game.Components.Abilities;
 using Il2CppTGK.Game.Components.Prayers;
 
-namespace BlasII.GlitchReviver.MirabrasDive;
+namespace BlasII.GlitchReviver.Modules;
 
+internal class MirabrasDive : BaseModule
+{
+    public override string Name { get; } = "MirabrasDive";
+    public override int Order { get; } = 1;
+}
+
+/// <summary>
+/// Perform weapon swap when pressing the button during a prayer
+/// </summary>
 [HarmonyPatch(typeof(FullPrayerAbility), nameof(FullPrayerAbility.OnUpdate))]
 class FullPrayerAbility_OnUpdate_Patch
 {
     public static void Postfix(FullPrayerAbility __instance)
     {
-        if (!Main.GlitchReviver.CurrentConfig.AllowMirabrasDive)
+        if (!Main.GlitchReviver.CurrentSettings.MirabrasDive)
             return;
 
         if (__instance.GetState() != AbilityState.EXECUTING)
@@ -23,8 +32,6 @@ class FullPrayerAbility_OnUpdate_Patch
 
         if (CoreCache.EquipmentManager.CountUnlockedWeapons() < 2)
             return;
-
-        Main.GlitchReviver.ActivateModule("MirabrasDive");
 
         var changeWeapon = AssetStorage.Abilities[ABILITY_IDS.ChangeWeapon];
         var fullPrayer = AssetStorage.Abilities[ABILITY_IDS.FullPrayer];
