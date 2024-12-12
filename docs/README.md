@@ -5,13 +5,14 @@
 ---
 
 ## Features
-- Enable/disable individual glitches on current patch
+- Enable/disable individual glitches with a single keypress
+- Press 'F6 + KeypadEnter' to toggle all modules at once
 
 ## Available glitches
-| Keybinding | Effect |
-| ---------- | ------ |
-| ```F6 + Keypad1``` | Toggle 'MirabrasDive' availablity |
-| ```F6 + Keypad2``` | Toggle 'MeaCulpaHover' availablity |
+| Keybinding | Name | Effect |
+| ---------- | ---- | ------ |
+| ```F6 + Keypad1``` | MirabrasDive | Whether Ruego/MC dives can be activated by canceling mirabras |
+| ```F6 + Keypad2``` | MeaCulpaHover | Whether MC projectiles can be spawned by swapping directions |
 
 ## Installation
 This mod is available for download through the [Blasphemous Mod Installer](https://github.com/BrandenEK/Blasphemous.Modding.Installer)
