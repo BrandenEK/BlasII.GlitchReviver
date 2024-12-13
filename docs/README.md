@@ -11,7 +11,7 @@
 ## Available glitches
 | Keybinding | Name | Effect |
 | ---------- | ---- | ------ |
-| ```F6 + Keypad1``` | MirabrasDive | Whether Ruego/MC dives can be activated by canceling mirabras |
+| ```F6 + Keypad1``` | MirabrasCancel | Whether the Mirabras prayer can be cancelled by weapon swapping |
 | ```F6 + Keypad2``` | MeaCulpaHover | Whether MC projectiles can be spawned by swapping directions |
 
 ## Installation
