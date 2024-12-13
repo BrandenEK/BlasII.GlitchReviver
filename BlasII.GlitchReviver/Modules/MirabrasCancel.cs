@@ -7,9 +7,9 @@ using Il2CppTGK.Game.Components.Prayers;
 
 namespace BlasII.GlitchReviver.Modules;
 
-internal class MirabrasDive : BaseModule
+internal class MirabrasCancel : BaseModule
 {
-    public override string Name { get; } = "MirabrasDive";
+    public override string Name { get; } = "MirabrasCancel";
     public override int Order { get; } = 1;
 }
 
@@ -21,7 +21,7 @@ class FullPrayerAbility_OnUpdate_Patch
 {
     public static void Postfix(FullPrayerAbility __instance)
     {
-        if (!Main.GlitchReviver.CurrentSettings.MirabrasDive)
+        if (!Main.GlitchReviver.CurrentSettings.MirabrasCancel)
             return;
 
         if (__instance.GetState() != AbilityState.EXECUTING)

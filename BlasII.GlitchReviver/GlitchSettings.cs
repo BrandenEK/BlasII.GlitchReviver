@@ -7,9 +7,9 @@ namespace BlasII.GlitchReviver;
 public class GlitchSettings
 {
     /// <summary>
-    /// Whether ruego/mc dives can be activated by canceling mirabras
+    /// Whether the Mirabras prayer can be cancelled by weapon swapping
     /// </summary>
-    public bool MirabrasDive { get; set; }
+    public bool MirabrasCancel { get; set; }
 
     /// <summary>
     /// Whether mc projectiles can be spawned by swapping directions
